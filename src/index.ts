@@ -7,16 +7,23 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import cors from "cors";
 
 // Initialize Firebase Admin SDK
-const adminConfig = {
-  credential: admin.credential.cert({
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
-  }),
-  databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}.firebaseio.com`
-};
 
-admin.initializeApp(adminConfig);
+const serviceAccount = {
+  "type": "service_account",
+  "project_id": "test-e1389",
+  "private_key_id": "09aea48a58a25bf5c71b2d6b7aa8f0c115501e99",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEugIBADANBgkqhkiG9w0BAQEFAASCBKQwggSgAgEAAoIBAQDtyJr/pUl5jCs6\nfOWQwUhvZcb+S8soJBGR+0W6IbvYixwBvk4P1XXE/JjJaG6ZpPj31SXMlq9bCSxN\nNbmaXoFmi4ex2s70mhvLXGE8AvUzeTW7Z33k5mnKmd74Vdqk5F+DV7EJVjeUaTMe\npLIN3OM6Cl89gVCKJlT1tHpHqKpyDWPWvmCGsXLx5la5rUnEL03RWJ6yPpkAPoKe\nHxEhJnrF/KEqL79CgH5EP9AYYxTu33xMglTnFw4p34fsMXjlrxmDlDce5pOCVbja\nq2WYAKj6G46K/XdPCyjHP2G59lZpSc+6meirLNmHdBI++K+NkP9BrQvb54tx4cZs\nuOOsbUjtAgMBAAECgf8g+TCFQuZtdIKKGce7yxHAYNy3ZstFRbsqAy4oIYVrAd9g\nXoN0rqUmK+EEDPdJVxcvRt92/25RsXPzQP/76B8JmU+32h/Yy4YPLUBOkhpuiOBq\nnG9Yzprc/Xlt9nnbY8/a5s4l/U63xd7Q4QXP5lGcOtP6M3R3s9kUOXK7fSglqHE+\n8gXZIwa5iJPxy5vBfbSDAkPiK+bJiMjGHnhtj/yzKwvw8eGdDVbwOZ/+gT9WSBx2\nCDG2dlncW41KOfFHKoBFnUOiVHMNbtg7kaUigtnhhv9++5catP55DZc3/iYWq0eq\neXaim+WNoH+CtzUxIwQNTJFChSOPW+ymlAgr/5ECgYEA+7WMGU3I8xLQ/FUEizb2\nAchwTZF9ptr6KaXbtm9jngs+vuPrLMMKjRkSyL7OsjVGYuZRY17aHoXOCLVVUULM\ngAk3GSieQ45QC7DMvzvY3atpe0dU7ln4ZuTDrYFOMVVC1ZHnV9oU7NAuBLgo8pi3\nVhHhXXyhZDSgrL8/s17wGzUCgYEA8dZJlG3XYGtFpkUfWTmTuC8GxUjfV2ahlAr9\nFdkvpMDVWHjO3cuowl0wLW5G7OEM2lpXfGMNmmGpkC2kZOacFIRZQDoccUCWpMHt\n9Db5BcaO5Dj616c2Grp7PuGFC0Cbwaiqa/g7wEdUGvULdYKXQt4zYjqWNRWbWoIv\nwlR7ddkCgYBspXBTe7/BK94JDKlpbc/B9UKEOMiDvQE9+NldZbcaAMCUpMxeBdII\nFUqGW9XcFiLLjZ6Txd1gT2EfYSXybWLX4SJnOaEWh9cFNMsrwClbhSGClMeUGkGe\nKCBORAH8SVEP3mp9ASUHEtTKNLN4A3MfM5iTQbhoCE9SQTq9sbzyAQKBgD/FpE2R\n0ZPJdepsm+Gpfzy4me54Uvz3QXCKnUafqSKm/xt/b/2o8O2gKU4xoF5i0kLaQ+u3\nKyUkz9QHVSyOa2Y1qFt5d3qd75uu0BLwVCajv5aLOAqaO3g86LciPTVEak5dLeOe\n6BLCPHmHWOg58a1ebupeTLHe6sKpRfLW2F+xAoGACHOdiNWUMATDonmhhJOSihLW\nz166TVjXQnt3l9MW2egQ8xHfmNW4+kO2uCrfQyiSSY+KBDlcwnkVbET+CLVGI/ej\ncUd8VpwppsTt0yvR7G69baRTdcOghztiLCntc6yPSr5/nOYFlpMC6itDblS10Ja8\n9WLkhRCvUrm8xwdlXiI=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@test-e1389.iam.gserviceaccount.com",
+  "client_id": "102362385922603896378",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40test-e1389.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
+
+
+admin.initializeApp(serviceAccount);
 
 // Test Firebase connection
 admin.firestore().listCollections()
@@ -28,17 +35,17 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Initialize Firebase Client SDK
-const clientConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID,
-  measurementId: process.env.FIREBASE_MEASUREMENT_ID
+const firebaseConfig = {
+  apiKey: "AIzaSyC03gb5CCmoB8uERk5qhGZJpIRZsGtxaXM",
+  authDomain: "test-e1389.firebaseapp.com",
+  projectId: "test-e1389",
+  storageBucket: "test-e1389.appspot.com",
+  messagingSenderId: "12312125533",
+  appId: "1:12312125533:web:7bf70088f67349f6e36db4",
+  measurementId: "G-7J0CETH46N",
 };
 
-const firebaseApp = initializeApp(clientConfig);
+const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 
 // Configure CORS
