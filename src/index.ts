@@ -7,32 +7,14 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import cors from "cors";
 
 // Initialize Firebase Admin SDK
-
-const serviceAccount = {
-  type: "service_account",
-  project_id: "test-e1389",
-  private_key_id: "09aea48a58a25bf5c71b2d6b7aa8f0c115501e99",
-  private_key: "-----BEGIN PRIVATE KEY-----\nMIIEugIBADANBgkqhkiG9w0BAQEFAASCBKQwggSgAgEAAoIBAQDtyJr/pUl5jCs6\nfOWQwUhvZcb+S8soJBGR+0W6IbvYixwBvk4P1XXE/JjJaG6ZpPj31SXMlq9bCSxN\nNbmaXoFmi4ex2s70mhvLXGE8AvUzeTW7Z33k5mnKmd74Vdqk5F+DV7EJVjeUaTMe\npLIN3OM6Cl89gVCKJlT1tHpHqKpyDWPWvmCGsXLx5la5rUnEL03RWJ6yPpkAPoKe\nHxEhJnrF/KEqL79CgH5EP9AYYxTu33xMglTnFw4p34fsMXjlrxmDlDce5pOCVbja\nq2WYAKj6G46K/XdPCyjHP2G59lZpSc+6meirLNmHdBI++K+NkP9BrQvb54tx4cZs\nuOOsbUjtAgMBAAECgf8g+TCFQuZtdIKKGce7yxHAYNy3ZstFRbsqAy4oIYVrAd9g\nXoN0rqUmK+EEDPdJVxcvRt92/25RsXPzQP/76B8JmU+32h/Yy4YPLUBOkhpuiOBq\nnG9Yzprc/Xlt9nnbY8/a5s4l/U63xd7Q4QXP5lGcOtP6M3R3s9kUOXK7fSglqHE+\n8gXZIwa5iJPxy5vBfbSDAkPiK+bJiMjGHnhtj/yzKwvw8eGdDVbwOZ/+gT9WSBx2\nCDG2dlncW41KOfFHKoBFnUOiVHMNbtg7kaUigtnhhv9++5catP55DZc3/iYWq0eq\neXaim+WNoH+CtzUxIwQNTJFChSOPW+ymlAgr/5ECgYEA+7WMGU3I8xLQ/FUEizb2\nAchwTZF9ptr6KaXbtm9jngs+vuPrLMMKjRkSyL7OsjVGYuZRY17aHoXOCLVVUULM\ngAk3GSieQ45QC7DMvzvY3atpe0dU7ln4ZuTDrYFOMVVC1ZHnV9oU7NAuBLgo8pi3\nVhHhXXyhZDSgrL8/s17wGzUCgYEA8dZJlG3XYGtFpkUfWTmTuC8GxUjfV2ahlAr9\nFdkvpMDVWHjO3cuowl0wLW5G7OEM2lpXfGMNmmGpkC2kZOacFIRZQDoccUCWpMHt\n9Db5BcaO5Dj616c2Grp7PuGFC0Cbwaiqa/g7wEdUGvULdYKXQt4zYjqWNRWbWoIv\nwlR7ddkCgYBspXBTe7/BK94JDKlpbc/B9UKEOMiDvQE9+NldZbcaAMCUpMxeBdII\nFUqGW9XcFiLLjZ6Txd1gT2EfYSXybWLX4SJnOaEWh9cFNMsrwClbhSGClMeUGkGe\nKCBORAH8SVEP3mp9ASUHEtTKNLN4A3MfM5iTQbhoCE9SQTq9sbzyAQKBgD/FpE2R\n0ZPJdepsm+Gpfzy4me54Uvz3QXCKnUafqSKm/xt/b/2o8O2gKU4xoF5i0kLaQ+u3\nKyUkz9QHVSyOa2Y1qFt5d3qd75uu0BLwVCajv5aLOAqaO3g86LciPTVEak5dLeOe\n6BLCPHmHWOg58a1ebupeTLHe6sKpRfLW2F+xAoGACHOdiNWUMATDonmhhJOSihLW\nz166TVjXQnt3l9MW2egQ8xHfmNW4+kO2uCrfQyiSSY+KBDlcwnkVbET+CLVGI/ej\ncUd8VpwppsTt0yvR7G69baRTdcOghztiLCntc6yPSr5/nOYFlpMC6itDblS10Ja8\n9WLkhRCvUrm8xwdlXiI=\n-----END PRIVATE KEY-----\n",
-  client_email: "firebase-adminsdk-fbsvc@test-e1389.iam.gserviceaccount.com",
-  client_id: "102362385922603896378",
-  auth_uri: "https://accounts.google.com/o/oauth2/auth",
-  token_uri: "https://oauth2.googleapis.com/token",
-  auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
-  client_x509_cert_url: "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40test-e1389.iam.gserviceaccount.com",
-  universe_domain: "googleapis.com"
-}
-
-
-admin.initializeApp(serviceAccount);
-
-// Test Firebase connection
-admin.firestore().listCollections()
-  .then(() => console.log('✅ Firebase Admin connected successfully'))
-  .catch(err => console.error('🔥 Firebase Admin connection failed:', err));
+const serviceAccount = require("./test-e1389-firebase-adminsdk-fbsvc-43a7d72b74.json");
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 const db: Firestore = admin.firestore();
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = 3000;
 
 // Initialize Firebase Client SDK
 const firebaseConfig = {
@@ -48,27 +30,11 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 
-// Configure CORS
-app.use(cors({
-  origin: [
-    process.env.FRONTEND_URL || 'http://localhost:3000',
-    'http://localhost:3000'
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
+// Enable CORS for all routes
+app.use(cors());
 
-// Middleware
+// Parse JSON bodies
 app.use(bodyParser.json());
-
-// Health check endpoint
-app.get('/health', (req: Request, res: Response) => {
-  res.status(200).json({ 
-    status: 'OK', 
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
-  });
-});
 
 // Base User Class
 class User {
@@ -84,7 +50,7 @@ class User {
     this.email = email;
     this.password = password;
     this.role = role;
-    this.isAvailable = true;
+    this.isAvailable = true; // Default to true
     this.createdAt = admin.firestore.FieldValue.serverTimestamp();
   }
 }
@@ -117,11 +83,11 @@ class Assistant extends User {
   }
 }
 
-// Technicien Class
+// Technicien Class - Updated with problem tracking
 class Technicien extends User {
   speciality: string;
-  allProblems: string[];
-  currentProblem: string | null;
+  allProblems: string[];  // Array of problem IDs
+  currentProblem: string | null;  // Current problem ID or null if none
 
   constructor(
     name: string,
@@ -153,46 +119,472 @@ class Admin extends User {
   }
 }
 
-// API Endpoints
+// Root route
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the User Service Microservice!");
 });
 
-// Login endpoint
+// Get assigned chefs for a specific assistant
+app.get("/users/:id/assigned-chefs", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    // Check if the user exists and is an assistant
+    const userRef = db.collection("users").doc(id);
+    const userDoc = await userRef.get();
+    if (!userDoc.exists || userDoc.data()?.role !== "assistant") {
+      res.status(404).json({ error: "Assistant not found" });
+      return;
+    }
+
+    // Fetch all chefs assigned to this assistant
+    const assignedChefIds = userDoc.data()?.chefIds || [];
+    const chefs: any[] = [];
+
+    for (const chefId of assignedChefIds) {
+      const chefRef = db.collection("users").doc(chefId);
+      const chefDoc = await chefRef.get();
+      if (chefDoc.exists) {
+        chefs.push({ id: chefDoc.id, ...chefDoc.data() });
+      }
+    }
+
+    res.status(200).json(chefs);
+  } catch (error) {
+    console.error("Error fetching assigned chefs:", error);
+    res.status(500).json({ error: "Failed to fetch assigned chefs" });
+  }
+});
+
+// Create a new user (both in Auth and Firestore)
+app.post("/users", async (req: Request, res: Response) => {
+  try {
+    const { name, email, password, role, isAvailable, ...additionalData } = req.body;
+
+    let user: User;
+
+    // Create the appropriate user object based on role
+    switch (role) {
+      case "chef":
+        user = new Chef(name, email, password, additionalData.place);
+        break;
+      case "assistant":
+        user = new Assistant(
+          name,
+          email,
+          password,
+          additionalData.section,
+          additionalData.chefIds || []
+        );
+        break;
+      case "technicien":
+        user = new Technicien(
+          name,
+          email,
+          password,
+          additionalData.speciality,
+          additionalData.allProblems || [],
+          additionalData.currentProblem || null
+        );
+        break;
+      case "admin":
+        user = new Admin(name, email, password, additionalData.nationality);
+        break;
+      default:
+        throw new Error("Invalid role");
+    }
+
+    // Override default isAvailable if provided in request
+    if (isAvailable !== undefined) {
+      user.isAvailable = isAvailable;
+    }
+
+    // 1. Create user in Firebase Authentication
+    const userRecord = await admin.auth().createUser({
+      email: user.email,
+      password: user.password,
+      displayName: user.name,
+    });
+
+    // 2. Save user data in Firestore using UID as document ID
+    const userRef = db.collection("users").doc(userRecord.uid);
+
+    let userData: any = {
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      isAvailable: user.isAvailable,
+      createdAt: user.createdAt,
+    };
+
+    if (role === "chef") {
+      userData.place = (user as Chef).place;
+    } else if (role === "assistant") {
+      userData.section = (user as Assistant).section;
+      userData.chefIds = (user as Assistant).chefIds;
+    } else if (role === "technicien") {
+      userData.speciality = (user as Technicien).speciality;
+      userData.allProblems = (user as Technicien).allProblems;
+      userData.currentProblem = (user as Technicien).currentProblem;
+    } else if (role === "admin") {
+      userData.nationality = (user as Admin).nationality;
+    }
+
+    await userRef.set(userData);
+
+    res.status(201).json({
+      id: userRecord.uid,
+      ...userData,
+      message: "User created successfully in Auth and Firestore",
+    });
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({ error: "Failed to create user" });
+  }
+});
+
+// Get current user
+app.get("/users/me", async (req: Request, res: Response) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    const userRef = db.collection("users").doc(decodedToken.uid);
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      res.status(404).json({ error: "User not found" });
+    } else {
+      res.status(200).json({ id: userDoc.id, ...userDoc.data() });
+    }
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ error: "Failed to fetch user" });
+  }
+});
+
+// Login Endpoint (returns token)
 app.post("/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  console.log('Login attempt for:', email);
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    console.log('Auth success for:', userCredential.user.uid);
-    
     const token = await userCredential.user.getIdToken();
     const uid = userCredential.user.uid;
     const userDoc = await db.collection("users").doc(uid).get();
 
-  
+    if (!userDoc.exists) {
+      throw new Error("User not found in Firestore");
+    }
+
     res.status(200).json({
       uid,
       token,
       ...userDoc.data(),
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Login error:", error);
-    
-    if (error.code === "auth/wrong-password" || error.code === "auth/user-not-found") {
+    if ((error as any).code === "auth/wrong-password" || (error as any).code === "auth/user-not-found") {
       res.status(401).json({ error: "Invalid credentials" });
     } else {
-      res.status(500).json({ 
-        error: "Login failed",
-        details: error.message 
-      });
+      res.status(500).json({ error: "Login failed" });
     }
   }
 });
+app.put("/users/:id/availability", async (req: Request, res: Response) => {
+  try {
+    const { isAvailable, currentProblem } = req.body;
+    const userRef = db.collection("users").doc(req.params.id);
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    await userRef.update({
+      isAvailable,
+      currentProblem,
+    });
+
+    res.status(200).json({ message: "Technician availability updated" });
+  } catch (error) {
+    console.error("Error updating technician:", error);
+    res.status(500).json({ error: "Failed to update technician" });
+  }
+});
+
+// Assign a chef to an assistant
+app.put(
+  "/users/assign-chef/:assistantId",
+  async (
+    req: Request<{ assistantId: string }, {}, { chefId: string }>,
+    res: Response
+  ): Promise<void> => {
+    try {
+      const { assistantId } = req.params;
+      const { chefId } = req.body;
+
+      // Check if the assistant exists
+      const assistantRef = db.collection("users").doc(assistantId);
+      const assistantDoc = await assistantRef.get();
+      if (!assistantDoc.exists || assistantDoc.data()?.role !== "assistant") {
+        res.status(404).json({ error: "Assistant not found" });
+        return;
+      }
+
+      // Check if the chef exists
+      const chefRef = db.collection("users").doc(chefId);
+      const chefDoc = await chefRef.get();
+      if (!chefDoc.exists || chefDoc.data()?.role !== "chef") {
+        res.status(404).json({ error: "Chef not found" });
+        return;
+      }
+
+      // Check if the chef is already assigned to another assistant
+      const assistantsSnapshot = await db
+        .collection("users")
+        .where("role", "==", "assistant")
+        .where("chefIds", "array-contains", chefId)
+        .get();
+
+      if (!assistantsSnapshot.empty) {
+        res
+          .status(400)
+          .json({ error: "Chef is already assigned to another assistant" });
+        return;
+      }
+
+      // Get the current chefIds array for the selected assistant
+      const currentChefIds = assistantDoc.data()?.chefIds || [];
+
+      // Add the new chefId if it doesn't already exist
+      if (!currentChefIds.includes(chefId)) {
+        currentChefIds.push(chefId);
+      }
+
+      // Update the assistant with the new chefIds array
+      await assistantRef.update({ chefIds: currentChefIds });
+
+      res.status(200).json({
+        message: "Chef assigned to assistant successfully",
+        chefIds: currentChefIds,
+      });
+    } catch (error) {
+      console.error("Error assigning chef:", error);
+      res.status(500).json({ error: "Failed to assign chef" });
+    }
+  }
+);
+
+// Get all users or search by email/availability
+app.get("/users", async (req: Request, res: Response) => {
+  try {
+    const { email, isAvailable } = req.query;
+
+    let usersQuery: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> =
+      db.collection("users");
+
+    // If email is provided, filter users by email
+    if (email) {
+      usersQuery = usersQuery.where("email", "==", email);
+    }
+
+    // If isAvailable is provided, filter by availability
+    if (isAvailable !== undefined) {
+      const available = isAvailable === 'true';
+      usersQuery = usersQuery.where("isAvailable", "==", available);
+    }
+
+    const usersSnapshot = await usersQuery.get();
+    const users: any[] = [];
+    usersSnapshot.forEach((doc) => {
+      users.push({ id: doc.id, ...doc.data() });
+    });
+
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
+});
+
+// Get assigned chefs for all assistants
+app.get("/assigned-chefs", async (req: Request, res: Response) => {
+  try {
+    // Fetch all assistants
+    const assistantsSnapshot = await db
+      .collection("users")
+      .where("role", "==", "assistant")
+      .get();
+
+    // Extract all assigned chefIds
+    const assignedChefIds: string[] = [];
+    assistantsSnapshot.forEach((doc) => {
+      const chefIds = doc.data()?.chefIds || [];
+      assignedChefIds.push(...chefIds);
+    });
+
+    // Remove duplicates (if any)
+    const uniqueAssignedChefIds = [...new Set(assignedChefIds)];
+
+    res.status(200).json({ assignedChefIds: uniqueAssignedChefIds });
+  } catch (error) {
+    console.error("Error fetching assigned chefs:", error);
+    res.status(500).json({ error: "Failed to fetch assigned chefs" });
+  }
+});
+
+// Get a user by ID
+app.get("/users/:id", async (req: Request, res: Response) => {
+  try {
+    const userRef = db.collection("users").doc(req.params.id);
+    const userDoc = await userRef.get();
+    if (!userDoc.exists) {
+      res.status(404).json({ error: "User not found" });
+    } else {
+      res.status(200).json({ id: userDoc.id, ...userDoc.data() });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch user" });
+  }
+});
+
+// Update a user
+app.put("/users/:id", async (req: Request, res: Response) => {
+  try {
+    const userRef = db.collection("users").doc(req.params.id);
+    const userDoc = await userRef.get();
+    if (!userDoc.exists) {
+      res.status(404).json({ error: "User not found" });
+    } else {
+      await userRef.update(req.body);
+      res.status(200).json({ message: "User updated successfully" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update user" });
+  }
+});
+
+// Delete a user (from both Auth and Firestore)
+app.delete("/users/:id", async (req: Request, res: Response) => {
+  try {
+    const uid = req.params.id;
+
+    // Delete from Authentication
+    await admin.auth().deleteUser(uid);
+
+    // Delete from Firestore
+    await db.collection("users").doc(uid).delete();
+
+    res
+      .status(200)
+      .json({ message: "User deleted successfully from Auth and Firestore" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete user" });
+  }
+});
+
+// **************** Technician Problem Management ********************
+
+// Assign a problem to a technician
+
+
+// Complete current problem for a technician
+
+
+// Get technician's problems
+
+
+// Get available technicians (those with no current problem)
+app.get('/techniciens/available', async (req: Request, res: Response) => {
+  try {
+    const snapshot = await db.collection('users')
+      .where('role', '==', 'technicien')
+      .where('currentProblem', '==', null)
+      .where('isAvailable', '==', true)
+      .get();
+
+    const availableTechnicians = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    res.status(200).json(availableTechnicians);
+  } catch (error) {
+    console.error("Error fetching available technicians:", error);
+    res.status(500).json({ error: "Failed to fetch available technicians" });
+  }
+});
+
+// **************** Statistic Endpoints ********************
+// Get problem statistics
+app.get('/problems/stats', async (req: Request, res: Response) => {
+  try {
+    const now = new Date();
+    const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+
+    // Get current month problems count
+    const currentMonthQuery = db.collection('problems')
+      .where('createdAt', '>=', startOfCurrentMonth);
+    
+    // Get last month problems count
+    const lastMonthQuery = db.collection('problems')
+      .where('createdAt', '>=', startOfLastMonth)
+      .where('createdAt', '<=', endOfLastMonth);
+
+    // Get problems by type
+    const typeAggregation = await db.collection('problems')
+      .select('type')
+      .get();
+
+    const typeCounts: Record<string, number> = {};
+    typeAggregation.forEach(doc => {
+      const type = doc.data().type;
+      typeCounts[type] = (typeCounts[type] || 0) + 1;
+    });
+
+    const byType = Object.entries(typeCounts).map(([name, value]) => ({
+      name,
+      value
+    }));
+
+    const [currentMonthSnapshot, lastMonthSnapshot] = await Promise.all([
+      currentMonthQuery.count().get(),
+      lastMonthQuery.count().get()
+    ]);
+
+    res.status(200).json({
+      currentMonthCount: currentMonthSnapshot.data().count,
+      lastMonthCount: lastMonthSnapshot.data().count,
+      byType
+    });
+  } catch (error) {
+    console.error("Error getting problem stats:", error);
+    res.status(500).json({ error: "Failed to get problem statistics" });
+  }
+});
+
+// Get recent problems
+app.get('/problems/recent', async (req: Request, res: Response) => {
+  try {
+    const snapshot = await db.collection('problems')
+      .orderBy('createdAt', 'desc')
+      .limit(5)
+      .get();
+
+    const recentProblems = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    res.status(200).json(recentProblems);
+  } catch (error) {
+    console.error("Error getting recent problems:", error);
+    res.status(500).json({ error: "Failed to get recent problems" });
+  }
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`User Service running on http://localhost:${port}`);
 });
