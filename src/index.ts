@@ -7,7 +7,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import cors from "cors";
 
 // Initialize Firebase Admin SDK
-const serviceAccount = require("./test-e1389-firebase-adminsdk-fbsvc-43a7d72b74.json");
+const serviceAccount = require("./test-e1389-firebase-adminsdk-fbsvc-666be5c36f.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
