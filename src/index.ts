@@ -8,16 +8,14 @@ import cors from "cors";
 
 // Initialize Firebase Admin SDK using environment variables
 // Replace the problematic line with:
-const serviceAccount = JSON.parse(
-  process.env.GOOGLE_APPLICATION_CREDENTIALS!.replace(/\\n/g, '\n')
-);
-// Replace your Firebase initialization with this:
+const firebaseConfig = {
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+};
+
 admin.initializeApp({
-  credential: admin.credential.cert({
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY
-  }),
+  credential: admin.credential.cert(firebaseConfig),
   databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}.firebaseio.com`
 });
 
