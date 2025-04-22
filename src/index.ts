@@ -6,20 +6,19 @@ import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import cors from "cors";
 
-// Initialize Firebase Admin SDK using environment variables
-// Replace the problematic line with:
-const firebaseConfig = {
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+// Initialize Firebase Admin SDK
+const adminConfig = {
+  credential: admin.credential.cert({
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+  }),
+  databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}.firebaseio.com`
 };
 
-admin.initializeApp({
-  credential: admin.credential.cert(firebaseConfig),
-  databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}.firebaseio.com`
-});
+admin.initializeApp(adminConfig);
 
-// Test Firebase connection on startup
+// Test Firebase connection
 admin.firestore().listCollections()
   .then(() => console.log('✅ Firebase Admin connected successfully'))
   .catch(err => console.error('🔥 Firebase Admin connection failed:', err));
@@ -29,7 +28,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Initialize Firebase Client SDK
-const firebaseConfig = {
+const clientConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
   projectId: process.env.FIREBASE_PROJECT_ID,
@@ -39,7 +38,7 @@ const firebaseConfig = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(clientConfig);
 const auth = getAuth(firebaseApp);
 
 // Configure CORS
@@ -152,11 +151,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the User Service Microservice!");
 });
 
-// [Keep all your existing endpoints exactly as they were]
-// [Include all your existing endpoint implementations here]
-// [They don't need modification, just keep them as-is]
-
-// Enhanced login endpoint with better error handling
+// Login endpoint
 app.post("/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
   console.log('Login attempt for:', email);
@@ -169,17 +164,18 @@ app.post("/login", async (req: Request, res: Response) => {
     const uid = userCredential.user.uid;
     const userDoc = await db.collection("users").doc(uid).get();
 
+    if (!userDoc.exists) {
+      console.error('User not found in Firestore');
+      return res.status(404).json({ error: "User not found" });
+    }
+
     res.status(200).json({
       uid,
       token,
       ...userDoc.data(),
     });
   } catch (error: any) {
-    console.error("Full login error:", {
-      code: error.code,
-      message: error.message,
-      stack: error.stack
-    });
+    console.error("Login error:", error);
     
     if (error.code === "auth/wrong-password" || error.code === "auth/user-not-found") {
       res.status(401).json({ error: "Invalid credentials" });
