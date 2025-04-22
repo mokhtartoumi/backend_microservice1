@@ -7,16 +7,14 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import cors from "cors";
 
 // Initialize Firebase Admin SDK
-const adminConfig = {
-  credential: admin.credential.cert({
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
-  }),
-  databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}.firebaseio.com`
-};
+try {
+  // Parse the service account JSON from environment variable
+  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT!);
 
-admin.initializeApp(adminConfig);
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`
+  });
 
 // Test Firebase connection
 admin.firestore().listCollections()
