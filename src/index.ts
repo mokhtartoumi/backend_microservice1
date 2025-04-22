@@ -7,8 +7,10 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import cors from "cors";
 
 // Initialize Firebase Admin SDK using environment variables
-const serviceAccount = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS || '{}');
-
+// Replace the problematic line with:
+const serviceAccount = JSON.parse(
+  process.env.GOOGLE_APPLICATION_CREDENTIALS!.replace(/\\n/g, '\n')
+);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`
