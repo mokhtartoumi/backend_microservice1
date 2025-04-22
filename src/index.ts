@@ -164,11 +164,6 @@ app.post("/login", async (req: Request, res: Response) => {
     const uid = userCredential.user.uid;
     const userDoc = await db.collection("users").doc(uid).get();
 
-    if (!userDoc.exists) {
-      console.error('User not found in Firestore');
-      return res.status(404).json({ error: "User not found" });
-    }
-
     res.status(200).json({
       uid,
       token,
