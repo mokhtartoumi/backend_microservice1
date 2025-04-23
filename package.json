@@ -6,7 +6,7 @@
     "start": "node dist/index.js",  // Runs compiled JS
     "build": "tsc",                // Compiles TS → JS
     "dev": "ts-node src/index.ts"   // For local dev only
-  }
+    
   },
   "keywords": [],
   "author": "",
