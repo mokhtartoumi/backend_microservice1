@@ -1,13 +1,12 @@
 {
-  "name": "agil-backend",
-  "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node dist/index.js",  // Runs compiled JS
-    "build": "tsc",                // Compiles TS → JS
-    "dev": "ts-node src/index.ts"   // For local dev only
-    
-  },
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "prestart": "npm run build"
+  
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
